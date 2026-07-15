@@ -7,6 +7,7 @@ import TopBar from "./TopBar";
 import Login from "./Login";
 import Register from "./Register";
 import ProtectedRoute from "./ProtectedRoute";
+import RedirectIfAuthenticated from "./RedirectIfAuthenticated";
 import AuthContext from "./AuthContext";
 
 const Home = () => {
@@ -26,8 +27,22 @@ const Home = () => {
   return (
     <AuthContext.Provider value={{ user, setUser }}>
       <Routes>
-        <Route path="/login" element={<Login setUser={setUser} />} />
-        <Route path="/register" element={<Register />} />
+        <Route
+          path="/login"
+          element={
+            <RedirectIfAuthenticated user={user}>
+              <Login setUser={setUser} />
+            </RedirectIfAuthenticated>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <RedirectIfAuthenticated user={user}>
+              <Register />
+            </RedirectIfAuthenticated>
+          }
+        />
         <Route
           path="/*"
           element={
