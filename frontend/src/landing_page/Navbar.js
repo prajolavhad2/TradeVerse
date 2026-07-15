@@ -46,6 +46,16 @@ function Navbar() {
                 </Link>
               </li>
               <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  href={`${process.env.REACT_APP_DASHBOARD_URL}/login`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Login
+                </a>
+              </li>
+              <li class="nav-item">
                 <Link class="nav-link active" aria-current="page" to="/signup">
                   Signup
                 </Link>
