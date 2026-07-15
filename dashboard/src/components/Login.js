@@ -13,10 +13,13 @@ const Login = ({ setUser }) => {
     e.preventDefault();
     setError("");
     try {
-      const res = await axios.post("http://localhost:3002/auth/login", {
-        email,
-        password,
-      });
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/login`,
+        {
+          email,
+          password,
+        },
+      );
       setUser(res.data);
       navigate("/");
     } catch (err) {

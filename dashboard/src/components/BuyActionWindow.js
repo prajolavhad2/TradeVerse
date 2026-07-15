@@ -13,7 +13,7 @@ const BuyActionWindow = ({ uid, mode }) => {
 
   useEffect(() => {
     if (mode === "SELL") {
-      axios.get("http://localhost:3002/allHoldings").then((res) => {
+      axios.get(`${process.env.REACT_APP_API_URL}/allHoldings`).then((res) => {
         const holding = res.data.find((stock) => stock.name === uid);
         setAvailableQty(holding ? holding.qty : 0);
       });
@@ -42,7 +42,7 @@ const BuyActionWindow = ({ uid, mode }) => {
     }
 
     axios
-      .post("http://localhost:3002/newOrder", {
+      .post(`${process.env.REACT_APP_API_URL}/newOrder`, {
         name: uid,
         qty: stockQuantity,
         price: stockPrice,

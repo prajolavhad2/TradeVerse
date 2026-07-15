@@ -16,7 +16,7 @@ const Menu = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:3002/auth/logout");
+      await axios.get(`${process.env.REACT_APP_API_URL}/auth/logout`);
       setUser(null);
       navigate("/login");
     } catch (err) {

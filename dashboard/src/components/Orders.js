@@ -9,7 +9,7 @@ const Orders = () => {
   const { refreshFlag } = useContext(GeneralContext);
 
   const fetchOrders = () => {
-    axios.get("http://localhost:3002/allOrders").then((res) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/allOrders`).then((res) => {
       setAllOrders(res.data);
     });
   };
@@ -19,9 +19,11 @@ const Orders = () => {
   }, [refreshFlag]);
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3002/deleteOrder/${id}`).then(() => {
-      fetchOrders();
-    });
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/deleteOrder/${id}`)
+      .then(() => {
+        fetchOrders();
+      });
   };
 
   const filteredOrders = allOrders.filter((order) =>

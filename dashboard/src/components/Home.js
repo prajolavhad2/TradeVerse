@@ -14,7 +14,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3002/auth/current-user")
+      .get(`${process.env.REACT_APP_API_URL}/auth/current-user`)
       .then((res) => {
         setUser(res.data);
       })

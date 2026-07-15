@@ -9,7 +9,7 @@ const Funds = () => {
   const { refreshFlag, triggerRefresh } = useContext(GeneralContext);
 
   const fetchFunds = () => {
-    axios.get("http://localhost:3002/funds").then((res) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/funds`).then((res) => {
       setFunds(res.data);
     });
   };
@@ -29,7 +29,7 @@ const Funds = () => {
 
     try {
       const { data: order } = await axios.post(
-        "http://localhost:3002/funds/create-order",
+        `${process.env.REACT_APP_API_URL}/funds/create-order`,
         { amount: numAmount },
       );
 
@@ -42,12 +42,15 @@ const Funds = () => {
         order_id: order.id,
         handler: async (response) => {
           try {
-            await axios.post("http://localhost:3002/funds/verify-payment", {
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-              amount: numAmount,
-            });
+            await axios.post(
+              `${process.env.REACT_APP_API_URL}/funds/verify-payment`,
+              {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                amount: numAmount,
+              },
+            );
             setAmount("");
             fetchFunds();
             triggerRefresh();
@@ -81,7 +84,9 @@ const Funds = () => {
     }
 
     axios
-      .post("http://localhost:3002/funds/withdraw", { amount: numAmount })
+      .post(`${process.env.REACT_APP_API_URL}/funds/withdraw`, {
+        amount: numAmount,
+      })
       .then(() => {
         setAmount("");
         fetchFunds();
