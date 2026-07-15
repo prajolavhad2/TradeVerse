@@ -41,7 +41,7 @@ function Universe() {
         </div>
       </div>
       <a
-        href="http://localhost:3000/register"
+        href={`${process.env.REACT_APP_DASHBOARD_URL}/register`}
         target="_blank"
         rel="noopener noreferrer"
         className="p-2 btn btn-primary fs-5 mb-5"

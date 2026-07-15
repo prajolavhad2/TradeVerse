@@ -23,7 +23,7 @@ const Apps = () => {
           </p>
         </div>
         <a
-          href="http://localhost:3001"
+          href={process.env.REACT_APP_FRONTEND_URL || "http://localhost:3001"}
           target="_blank"
           rel="noopener noreferrer"
           style={{

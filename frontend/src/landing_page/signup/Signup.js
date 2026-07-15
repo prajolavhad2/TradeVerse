@@ -26,7 +26,7 @@ function Signup() {
       </p>
 
       <a
-        href="http://localhost:3000/register"
+        href={`${process.env.REACT_APP_DASHBOARD_URL}/register`}
         target="_blank"
         rel="noopener noreferrer"
         style={{
@@ -47,7 +47,7 @@ function Signup() {
       <p style={{ fontSize: "0.85rem", color: "#888" }}>
         Already have an account?{" "}
         <a
-          href="http://localhost:3000/login"
+          href={`${process.env.REACT_APP_DASHBOARD_URL}/login`}
           target="_blank"
           rel="noopener noreferrer"
           style={{ color: "#4184f3", fontWeight: 500, textDecoration: "none" }}
