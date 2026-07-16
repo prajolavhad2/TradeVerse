@@ -6,6 +6,7 @@ const passportLocalMongoose =
 const UserSchema = new Schema({
   username: { type: String, required: true },
   role: { type: String, enum: ["user", "admin"], default: "user" },
+  balance: { type: Number, default: 10000 },
 });
 
 UserSchema.plugin(passportLocalMongoose, {
