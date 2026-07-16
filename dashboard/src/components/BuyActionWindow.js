@@ -8,6 +8,7 @@ const BuyActionWindow = ({ uid, mode }) => {
   const [stockQuantity, setStockQuantity] = useState(1);
   const [stockPrice, setStockPrice] = useState(0.0);
   const [availableQty, setAvailableQty] = useState(null);
+  const [availableBalance, setAvailableBalance] = useState(null);
   const [qtyError, setQtyError] = useState("");
   const generalContext = useContext(GeneralContext);
 
@@ -17,27 +18,50 @@ const BuyActionWindow = ({ uid, mode }) => {
         const holding = res.data.find((stock) => stock.name === uid);
         setAvailableQty(holding ? holding.qty : 0);
       });
+    } else {
+      axios.get(`${process.env.REACT_APP_API_URL}/funds`).then((res) => {
+        setAvailableBalance(res.data.available ?? 0);
+      });
     }
   }, [mode, uid]);
 
-  const handleQtyChange = (e) => {
-    const value = Number(e.target.value);
-    setStockQuantity(e.target.value);
+  const marginRequired = Number(stockQuantity || 0) * Number(stockPrice || 0);
 
-    if (mode === "SELL" && availableQty !== null && value > availableQty) {
-      setQtyError(`You only have ${availableQty} shares available to sell`);
-    } else {
-      setQtyError("");
+  const validateQty = (qty, price) => {
+    const numQty = Number(qty);
+    const numPrice = Number(price);
+
+    if (mode === "SELL" && availableQty !== null && numQty > availableQty) {
+      return `You only have ${availableQty} shares available to sell`;
     }
+
+    if (
+      mode === "BUY" &&
+      availableBalance !== null &&
+      numQty * numPrice > availableBalance
+    ) {
+      return `Insufficient balance. Available: ₹${availableBalance.toFixed(2)}`;
+    }
+
+    return "";
+  };
+
+  const handleQtyChange = (e) => {
+    const value = e.target.value;
+    setStockQuantity(value);
+    setQtyError(validateQty(value, stockPrice));
+  };
+
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    setStockPrice(value);
+    setQtyError(validateQty(stockQuantity, value));
   };
 
   const handleOrderClick = () => {
-    if (
-      mode === "SELL" &&
-      availableQty !== null &&
-      Number(stockQuantity) > availableQty
-    ) {
-      setQtyError(`You only have ${availableQty} shares available to sell`);
+    const error = validateQty(stockQuantity, stockPrice);
+    if (error) {
+      setQtyError(error);
       return;
     }
 
@@ -69,6 +93,11 @@ const BuyActionWindow = ({ uid, mode }) => {
             Available to sell: <strong>{availableQty}</strong>
           </p>
         )}
+        {mode === "BUY" && availableBalance !== null && (
+          <p style={{ fontSize: "0.8rem", color: "#666", marginBottom: "8px" }}>
+            Available balance: <strong>₹{availableBalance.toFixed(2)}</strong>
+          </p>
+        )}
         <div className="inputs">
           <fieldset>
             <legend>Qty.</legend>
@@ -89,7 +118,7 @@ const BuyActionWindow = ({ uid, mode }) => {
               name="price"
               id="price"
               step="0.05"
-              onChange={(e) => setStockPrice(e.target.value)}
+              onChange={handlePriceChange}
               value={stockPrice}
             />
           </fieldset>
@@ -100,7 +129,7 @@ const BuyActionWindow = ({ uid, mode }) => {
       </div>
 
       <div className="buttons">
-        <span>Margin required ₹140.65</span>
+        <span>Margin required ₹{marginRequired.toFixed(2)}</span>
         <div>
           <button
             className={mode === "SELL" ? "btn btn-red" : "btn btn-blue"}
